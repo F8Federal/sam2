@@ -3,8 +3,8 @@ import io
 import os
 import hashlib
 from flask import request, Blueprint
-from app.util import build_response_error, generate_polygons_from_masks, select_device
-from app.cds import fetch_from_cds, save_to_cds
+from util import build_response_error, generate_polygons_from_masks, select_device
+from cds import fetch_from_cds, save_to_cds
 from sam2.build_sam import build_sam2
 from sam2.automatic_mask_generator import SAM2AutomaticMaskGenerator
 from PIL import Image
@@ -13,9 +13,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-sam2_checkpoint = "/tmp/sam2/checkpoints/sam2.1_hiera_large.pt"
+sam2_checkpoint = "checkpoints/sam2.1_hiera_tiny.pt"
 # sam2_checkpoint = "app/app/checkpoint/sam2.1_hiera_large.pt"
-model_cfg = "configs/sam2.1/sam2.1_hiera_l.yaml"
+model_cfg = "configs/sam2.1/sam2.1_hiera_t.yaml"
 segment_routes = Blueprint("segment_routes", __name__)
 
 # Define cache directory
