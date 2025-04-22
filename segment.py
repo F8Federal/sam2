@@ -13,9 +13,13 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-sam2_checkpoint = "checkpoints/sam2.1_hiera_tiny.pt"
-# sam2_checkpoint = "app/app/checkpoint/sam2.1_hiera_large.pt"
-model_cfg = "configs/sam2.1/sam2.1_hiera_t.yaml"
+# sam2_checkpoint = "checkpoints/sam2.1_hiera_tiny.pt"
+# # sam2_checkpoint = "app/app/checkpoint/sam2.1_hiera_large.pt"
+# model_cfg = "configs/sam2.1/sam2.1_hiera_t.yaml"
+
+sam2_checkpoint = "checkpoints/sam2.1_hiera_large.pt"
+model_cfg = "configs/sam2.1/sam2.1_hiera_l.yaml"
+
 segment_routes = Blueprint("segment_routes", __name__)
 
 # Define cache directory
@@ -77,6 +81,7 @@ def generate_masks():
 
             if environment == "dev":
                 mask_generator = SAM2AutomaticMaskGenerator(sam2)
+                print("Initialized 'dev' Mask Generator")
             else:
                 # This configuration generates better masks
                 # However, without using cuda there is a performance issue
@@ -95,8 +100,10 @@ def generate_masks():
                     min_mask_region_area=25.0,
                     use_m2m=True,
                 )
-
+                print("Initialized 'prod' Mask Generator")
+            print("Generating masks..")
             sam_result = mask_generator.generate(image_np)
+            print("Generated masks!")
             save_to_cds(cache_file_path, sam_result, storage_token)
 
         print("Mask Generator Finished")
@@ -111,10 +118,12 @@ def generate_masks():
             }
             mask_data_list.append(mask_info)
 
-        print("Generate polygons from masks", len(mask_data_list))
+        # print("Generate polygons from masks", len(mask_data_list))
+        print("Generating polygons from masks...")
         valid_polygons = generate_polygons_from_masks(
             mask_data_list, image_width, image_height
         )
+        print("Generated polygons from masks!!")
 
         final_response = {"masks": valid_polygons}
 

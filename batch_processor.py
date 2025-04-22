@@ -10,7 +10,7 @@ from tqdm import tqdm
 import json
 
 # Assuming sam_scripts is in the same parent directory or PYTHONPATH includes it
-from sam2_scripts.util import generate_polygons_from_masks
+from sam2.util import generate_polygons_from_masks
 
 # Fallback if running from a different structure, adjust as necessary
 # print("Warning: Could not import from sam2_scripts. Ensure it's in the Python path.")
